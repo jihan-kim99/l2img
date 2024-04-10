@@ -3,11 +3,11 @@ import Image from "next/image";
 import { useState } from "react";
 
 const TxtViewer = ({ fileText }: { fileText: string }) => {
-  const [currentPage, setCurrentPage] = useState(40);
+  const [currentPage, setCurrentPage] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const fileInLine = fileText.split("\n");
-  const pageSize = 100;
+  const pageSize = 50;
 
   const pageCount = Math.ceil(fileInLine.length / pageSize);
   const startIndex = currentPage * pageSize;
