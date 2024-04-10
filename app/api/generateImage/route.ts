@@ -5,7 +5,7 @@ import { text } from "stream/consumers";
 export async function POST(req: NextApiRequest) {
   const hfToken = process.env.HF_API_KEY;
   const body = await text(req.body);
-  const defaultPrompt = ["masterpiece", "high resolution", "anime"].join(",");
+  const defaultPrompt = ["masterpiece", "high resolution, "].join(",");
   const prompt = [defaultPrompt, ...JSON.parse(body).description].join("");
   console.log(prompt);
   const image = await fetch(
