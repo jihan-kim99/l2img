@@ -17,9 +17,11 @@ export async function POST(req: NextApiRequest) {
     messages: [
       {
         role: "system",
-        content: `You will check if the given text is worthy generating Image also has detailed description about appearance.
-          If the check pass You will return the JSON object with the flag "isImage" set to true and fill the description of the desirable Image.
-          Image describing should be simple, give least 10 tags, the scene and in the form of danbooru tag.
+        content: `You will check if there is just one scene that is interesting to generate in given text.
+          Only one scene is allowed to generate.
+          Only describe the scene that is interesting to generate.
+          If the check pass You will return the JSON object with the flag "isImage" set to true and fill description with tags.
+          Give least 10 tags in the form of danbooru tag. For example, "blue_eyes, long_hair, school_uniform".
           If the check fails You will return the JSON object with the flag "isImage" set to false.
           {isImage: false, description: ""}
           `,

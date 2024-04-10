@@ -1,13 +1,23 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const TxtViewer = ({ fileText }: { fileText: string }) => {
+const TxtViewer = ({
+  fileText,
+  narou,
+  handleNextPage,
+  subTitle,
+}: {
+  fileText: string;
+  narou: boolean;
+  handleNextPage: () => void;
+  subTitle: string;
+}) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const fileInLine = fileText.split("\n");
-  const pageSize = 50;
+  const pageSize = 25;
 
   const pageCount = Math.ceil(fileInLine.length / pageSize);
   const startIndex = currentPage * pageSize;
@@ -17,8 +27,23 @@ const TxtViewer = ({ fileText }: { fileText: string }) => {
   const handlePageChange = (selectedPage: { selected: number }) => {
     setCurrentPage(selectedPage.selected);
     setImageUrl(null);
+    scrollToTop();
     handleAskAI();
   };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    handleAskAI();
+    setCurrentPage(0);
+    scrollToTop();
+    setImageUrl(null);
+  }, [fileText]);
 
   const generateImage = async (description: string) => {
     const fetchedData = await fetch("/api/generateImage", {
@@ -54,6 +79,7 @@ const TxtViewer = ({ fileText }: { fileText: string }) => {
     const imageDesc = JSON.parse(data.text.message.content);
     console.log(imageDesc.isImage);
     if (imageDesc.isImage) {
+      setImageUrl("/loading.png");
       console.debug(imageDesc.description);
       generateImage(imageDesc.description);
     }
@@ -61,10 +87,19 @@ const TxtViewer = ({ fileText }: { fileText: string }) => {
 
   return (
     <>
+      <Typography variant="h4" textAlign="center" paddingTop={5}>
+        {subTitle}
+      </Typography>
       <Grid container justifyContent="center" alignItems="center">
         <Grid item xs={6} flex={1} flexWrap="wrap">
           {currentPageText.map((line, index) => (
-            <Typography key={index} variant="body1" textAlign="start">
+            <Typography
+              key={index}
+              variant="body1"
+              textAlign="start"
+              paddingLeft={5}
+              paddingTop={2}
+            >
               {line}
             </Typography>
           ))}
@@ -74,17 +109,23 @@ const TxtViewer = ({ fileText }: { fileText: string }) => {
             <Image
               src={imageUrl}
               alt="Generated Image"
-              width={512}
-              height={512}
+              width={720}
+              height={720}
             />
           )}
         </Grid>
       </Grid>
-      <Box display="absolute" justifyContent="center" alignItems="center">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        margin={10}
+      >
         <Button
           variant="contained"
           disabled={currentPage === 0}
           onClick={() => handlePageChange({ selected: currentPage - 1 })}
+          style={{ marginRight: 10 }}
         >
           Back
         </Button>
@@ -92,8 +133,17 @@ const TxtViewer = ({ fileText }: { fileText: string }) => {
           variant="contained"
           disabled={currentPage === pageCount - 1}
           onClick={() => handlePageChange({ selected: currentPage + 1 })}
+          style={{ marginRight: 10 }}
         >
           Next
+        </Button>
+        <Button
+          variant="contained"
+          disabled={!narou}
+          onClick={() => handleNextPage()}
+          style={{ marginRight: 10 }}
+        >
+          Next Episode
         </Button>
         <Typography variant="body1">
           {currentPage + 1} / {pageCount}
