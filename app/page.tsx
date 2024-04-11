@@ -13,7 +13,6 @@ const L2i = () => {
   const [webUrl, setWebUrl] = useState("");
   const [isNarou, setIsNarou] = useState(false);
 
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -45,21 +44,26 @@ const L2i = () => {
       .catch((err) => {
         console.error(err);
       });
-  }
+  };
   const handleNextPage = () => {
     let url = new URL(webUrl);
-    let pathParts = url.pathname.split('/');
+    let pathParts = url.pathname.split("/");
     pathParts[2] = (parseInt(pathParts[2]) + 1).toString();
-    let newPath = pathParts.join('/');
+    let newPath = pathParts.join("/");
     url.pathname = newPath;
     setWebUrl(url.toString());
     handleWebUrlCrawl();
-  }
+  };
 
   return (
     <Box component="main">
       {fileText ? (
-        <EPubViewer fileText={fileText} subTitle={subTitle} narou={isNarou} handleNextPage={handleNextPage}/>
+        <EPubViewer
+          fileText={fileText}
+          subTitle={subTitle}
+          isNarou={isNarou}
+          handleNextPage={handleNextPage}
+        />
       ) : (
         <>
           <Box
@@ -87,9 +91,14 @@ const L2i = () => {
               <input type="file" hidden onChange={handleFileChange} />
             </Button>
           </Box>
-              <Typography fontSize={40} fontWeight="bold" textAlign="center" marginTop={10}>
-                Or
-              </Typography>
+          <Typography
+            fontSize={40}
+            fontWeight="bold"
+            textAlign="center"
+            marginTop={10}
+          >
+            Or
+          </Typography>
           <Box
             sx={{
               display: "flex",
@@ -100,21 +109,27 @@ const L2i = () => {
               alignItems: "center",
             }}
           >
-          <Box sx={{width:'70%'}}>
-            <Input
-              value={webUrl}
-              fullWidth
-              placeholder="Input web url"
-              onChange={(e) => setWebUrl(e.target.value)}
+            <Box sx={{ width: "70%" }}>
+              <Input
+                value={webUrl}
+                fullWidth
+                placeholder="Input web url"
+                onChange={(e) => setWebUrl(e.target.value)}
               />
-          </Box>
             </Box>
-          <Box sx={{display: 'flex', justifyContent: 'center', alignItems: "center"}}>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Button
               variant="contained"
-              style={{ margin: "20px", borderRadius: 20, width: 200}}
+              style={{ margin: "20px", borderRadius: 20, width: 200 }}
               onClick={handleWebUrlCrawl}
-              >
+            >
               Load
             </Button>
           </Box>

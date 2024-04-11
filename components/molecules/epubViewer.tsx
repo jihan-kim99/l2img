@@ -1,15 +1,18 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Lottie from "react-lottie-player";
+
+import loadingJson from "@/components/atom/loading.json";
 
 const TxtViewer = ({
   fileText,
-  narou,
+  isNarou,
   handleNextPage,
   subTitle,
 }: {
   fileText: string;
-  narou: boolean;
+  isNarou: boolean;
   handleNextPage: () => void;
   subTitle: string;
 }) => {
@@ -79,7 +82,7 @@ const TxtViewer = ({
     const imageDesc = JSON.parse(data.text.message.content);
     console.log(imageDesc.isImage);
     if (imageDesc.isImage) {
-      setImageUrl("/loading.png");
+      setImageUrl(null);
       console.debug(imageDesc.description);
       generateImage(imageDesc.description);
     }
@@ -104,13 +107,30 @@ const TxtViewer = ({
             </Typography>
           ))}
         </Grid>
-        <Grid item xs={6}>
-          {imageUrl && (
-            <Image
-              src={imageUrl}
-              alt="Generated Image"
-              width={720}
-              height={720}
+        <Grid
+          item
+          xs={6}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {imageUrl ? (
+            <Box sx={{ width: "100%", p: "4rem" }}>
+              <Image
+                src={imageUrl}
+                alt="Generated Image"
+                width={400}
+                height={400}
+              />
+            </Box>
+          ) : (
+            <Lottie
+              loop
+              animationData={loadingJson}
+              play
+              style={{ width: 180, height: 180 }}
             />
           )}
         </Grid>
@@ -139,7 +159,7 @@ const TxtViewer = ({
         </Button>
         <Button
           variant="contained"
-          disabled={!narou}
+          disabled={!isNarou}
           onClick={() => handleNextPage()}
           style={{ marginRight: 10 }}
         >
